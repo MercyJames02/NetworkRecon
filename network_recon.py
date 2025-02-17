@@ -24,6 +24,42 @@ def save_report(data):
     with open(report_file, "a") as file:
         file.write(data + "\n")
 
+# Port Scanner Module
+# utils/port_scanner.py
+
+def scan_ports(target, start_port, end_port):
+    open_ports = []
+    def scan(port):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(1)
+            if s.connect_ex((target, port)) == 0:
+                open_ports.append(port)
+    
+    threads = []
+    for port in range(start_port, end_port + 1):
+        thread = threading.Thread(target=scan, args=(port,))
+        threads.append(thread)
+        thread.start()
+    
+    for thread in threads:
+        thread.join()
+    
+    return open_ports
+
+# Banner Grabber Module
+# utils/banner_grabber.py
+
+def grab_banner(target, port):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(2)
+            s.connect((target, port))
+            s.send(b"HEAD / HTTP/1.1\r\nHost: target\r\n\r\n")
+            banner = s.recv(1024).decode().strip()
+            return banner if banner else "No banner retrieved"
+    except:
+        return "No banner retrieved"
+
 # Main function
 if __name__ == "__main__":
     target = input("Enter target IP or domain: ")
