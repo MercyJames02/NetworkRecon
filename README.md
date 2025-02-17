@@ -1,48 +1,45 @@
+# NetworkRecon - Basic Network Reconnaissance Tool
 
-# network_recon.py
-import socket
-import threading
-import time
-from utils.port_scanner import scan_ports
-from utils.banner_grabber import grab_banner
+## Description
+NetworkRecon is a lightweight Python tool for network reconnaissance. It scans open ports on a target, retrieves service banners, and logs the results.
 
-# Colors for terminal output
-class Colors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
+## Features
+- **Port Scanning**: Identifies open ports on a target host.
+- **Banner Grabbing**: Retrieves basic information about running services.
+- **Threading for Faster Scans**: Uses multi-threading to improve performance.
+- **Report Generation**: Saves results to a text file in the `reports/` directory.
 
-# Save results to a report
-report_file = "reports/scan_report.txt"
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/NetworkRecon.git
+   cd NetworkRecon
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-def save_report(data):
-    with open(report_file, "a") as file:
-        file.write(data + "\n")
+## Usage
+Run the script and provide a target IP or domain:
+```bash
+python network_recon.py
+```
 
-# Main function
-if __name__ == "__main__":
-    target = input("Enter target IP or domain: ")
-    start_time = time.time()
+## Example Output
+```
+Starting network reconnaissance on 192.168.1.1...
+Port 22/tcp is open. Banner: OpenSSH 8.2p1 Ubuntu 4ubuntu0.3
+Port 80/tcp is open. Banner: Apache/2.4.41 (Ubuntu)
+Scan completed in 2.45 seconds.
+Report saved to reports/scan_report.txt
+```
 
-    try:
-        print(f"{Colors.HEADER}Starting network reconnaissance on {target}...{Colors.ENDC}\n")
-        
-        # Port scanning
-        open_ports = scan_ports(target, 1, 1024)  # Scans ports 1 to 1024
-        if not open_ports:
-            print(f"{Colors.WARNING}No open ports found.{Colors.ENDC}")
-        else:
-            for port in open_ports:
-                banner = grab_banner(target, port)
-                result = f"Port {port}/tcp is open. Banner: {banner}"
-                print(f"{Colors.OKGREEN}{result}{Colors.ENDC}")
-                save_report(result)
-        
-        print(f"\n{Colors.OKBLUE}Scan completed in {time.time() - start_time:.2f} seconds.{Colors.ENDC}")
-    except Exception as e:
-        print(f"{Colors.FAIL}Error: {str(e)}{Colors.ENDC}")
-    finally:
-        print(f"{Colors.HEADER}Report saved to {report_file}{Colors.ENDC}")
+## Dependencies
+- Python 3
+- socket
+- threading
+- os
+
+## Disclaimer
+This tool is for educational purposes only. Use it legally and responsibly.
