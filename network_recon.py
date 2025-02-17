@@ -2,6 +2,7 @@
 import socket
 import threading
 import time
+import os
 from utils.port_scanner import scan_ports
 from utils.banner_grabber import grab_banner
 
@@ -14,8 +15,10 @@ class Colors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
-# Save results to a report
-report_file = "reports/scan_report.txt"
+# Ensure reports directory exists
+report_dir = "reports"
+os.makedirs(report_dir, exist_ok=True)
+report_file = os.path.join(report_dir, "scan_report.txt")
 
 def save_report(data):
     with open(report_file, "a") as file:
